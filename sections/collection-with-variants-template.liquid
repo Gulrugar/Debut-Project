@@ -156,7 +156,7 @@
       <ul class="grid grid--uniform{% if collection.products_count > 0 %} grid--view-items{% endif %}">
         
         {% for product in collection.products %}
-
+          <!-- My code START -->
           {%- liquid
             assign optionColorIndex = 'option1'
             for option in product.options
@@ -170,15 +170,24 @@
 
           {%- if variantOptionColors != blank -%}
             {%- for color in variantOptionColors -%}
+              {% liquid
+                assign colorVariant = product.variants | where: optionColorIndex, color
+
+                assign product = colorVariant[0]
+              %}
               <li class="grid__item grid__item--{{ section.id }} {{ grid_item_width }}">
-                {% include 'product-card-grid-with-variants', max_height: max_height, color: color, option_index: optionColorIndex %}
+                <!-- Note: Custom product-card-grid -->
+                {% include 'product-card-grid-with-variants', max_height: max_height %}
               </li>
             {%- endfor -%}
           {%- else -%}
+          <!-- My code END -->
             <li class="grid__item grid__item--{{ section.id }} {{ grid_item_width }}">
               {% include 'product-card-grid', max_height: max_height %}
             </li>
+          <!-- My code START -->
           {%- endif -%}
+          <!-- My code END -->
         {% else %}
           {% comment %}
           Add default products to help with onboarding for collections/all only.

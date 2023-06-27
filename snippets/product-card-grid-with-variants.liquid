@@ -1,31 +1,31 @@
-{% liquid
-  assign productVariants = product.variants | where: optionColorIndex, color
+<!-- Note: product is replaced with colorVariant -->
 
-  assign productVariant = productVariants[0]
-%}
-
-<div class="grid-view-item{% unless productVariant.available %} grid-view-item--sold-out{% endunless %} product-card" data-product-card>
-  <a class="grid-view-item__link grid-view-item__image-container full-width-link" href="{{ productVariant.url | within: collection }}">
-    <span class="visually-hidden">{{ productVariant.title }}</span>
+<div class="grid-view-item{% unless colorVariant.available %} grid-view-item--sold-out{% endunless %} product-card" data-product-card>
+  <a class="grid-view-item__link grid-view-item__image-container full-width-link" href="{{ colorVariant.url | within: collection }}">
+    <span class="visually-hidden">
+      <!-- My code START -->
+      {{ colorVariant.product.title }}&nbsp;-&nbsp;{{ color }}
+      <!-- My code END -->
+    </span>
   </a>
 
-  {% capture img_id %}ProductCardImage-{{ section.id }}-{{ productVariant.id }}{% endcapture %}
-  {% capture wrapper_id %}ProductCardImageWrapper-{{ section.id }}-{{ productVariant.id }}{% endcapture %}
-  {%- assign img_url = productVariant.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+  {% capture img_id %}ProductCardImage-{{ section.id }}-{{ colorVariant.id }}{% endcapture %}
+  {% capture wrapper_id %}ProductCardImageWrapper-{{ section.id }}-{{ colorVariant.id }}{% endcapture %}
+  {%- assign img_url = colorVariant.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
 
-  {% unless productVariant.featured_image == blank %}
-    {% include 'image-style' with image: productVariant.featured_image, width: max_height, height: max_height, small_style: true, wrapper_id: wrapper_id, img_id: img_id %}
+  {% unless colorVariant.featured_image == blank %}
+    {% include 'image-style' with image: colorVariant.featured_image, width: max_height, height: max_height, small_style: true, wrapper_id: wrapper_id, img_id: img_id %}
   {% endunless %}
 
   <div class="product-card__image-with-placeholder-wrapper" data-image-with-placeholder-wrapper>
     <div id="{{ wrapper_id }}" class="grid-view-item__image-wrapper product-card__image-wrapper js">
-      <div style="padding-top:{% unless productVariant.featured_image == blank %}{{ 1 | divided_by: productVariant.featured_image.aspect_ratio | times: 100 }}%{% else %}100%{% endunless %};">
+      <div style="padding-top:{% unless colorVariant.featured_image == blank %}{{ 1 | divided_by: colorVariant.featured_image.aspect_ratio | times: 100 }}%{% else %}100%{% endunless %};">
         <img id="{{ img_id }}"
               class="grid-view-item__image lazyload"
-              alt="{{ productVariant.featured_image.alt }}"
+              alt="{{ colorVariant.featured_image.alt }}"
               data-src="{{ img_url }}"
               data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
-              data-aspectratio="{{ productVariant.featured_image.aspect_ratio }}"
+              data-aspectratio="{{ colorVariant.featured_image.aspect_ratio }}"
               data-sizes="auto"
               data-image>
       </div>
@@ -35,11 +35,15 @@
 
   <noscript>
     {% capture image_size %}{{ max_height }}x{{ max_height }}{% endcapture %}
-    <img class="grid-view-item__image" src="{{ productVariant.featured_image.src | img_url: image_size, scale: 2 }}" alt="{{ productVariant.featured_image.alt }}" style="max-width: {{ max_height | times: productVariant.featured_image.aspect_ratio }}px;">
+    <img class="grid-view-item__image" src="{{ colorVariant.featured_image.src | img_url: image_size, scale: 2 }}" alt="{{ colorVariant.featured_image.alt }}" style="max-width: {{ max_height | times: colorVariant.featured_image.aspect_ratio }}px;">
   </noscript>
 
-  <div class="h4 grid-view-item__title product-card__title" aria-hidden="true">{{ product.title }} - {{ color }} </div>
+  <div class="h4 grid-view-item__title product-card__title" aria-hidden="true">
+    <!-- My code START -->  
+    {{ colorVariant.product.title }}&nbsp;-&nbsp;{{ color }}
+    <!-- My code END -->
+  </div>
 
-  {% include 'product-price', variant: productVariant %}
+  {% include 'product-price', variant: colorVariant %}
 
 </div>
